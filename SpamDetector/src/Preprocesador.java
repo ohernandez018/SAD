@@ -8,14 +8,15 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.TextDirectoryLoader;
+import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
+import weka.filters.unsupervised.attribute.StringToWordVector;
 
 public class Preprocesador {
 
 	private static Preprocesador miPreprocesador = new Preprocesador();
 
 	private Preprocesador() {
-
 	}
 
 	public static Preprocesador getPreprocesador() {
@@ -52,13 +53,8 @@ public class Preprocesador {
 					instancia.setClassMissing();
 				}
 			}
-
 			// Se guardan en un fichero arff
-			file = new File(pathDestino);
-			ArffSaver saver = new ArffSaver();
-			saver.setInstances(data);
-			saver.setFile(file);
-			saver.writeBatch();
+			guardarDatos(pathDestino, data);
 
 		} catch (IOException e) {
 			System.out.println("Se ha producido un error en la conversion.");
@@ -66,4 +62,34 @@ public class Preprocesador {
 		}
 	}
 
+	private void guardarDatos(String path, Instances data) {
+		try {
+			// guardar datos
+			File fi = new File(path);
+			ArffSaver saver = new ArffSaver();
+			saver.setInstances(data);
+			saver.setFile(fi);
+			saver.writeBatch();
+		} catch (IOException e) {
+			System.err.print("Error al guardar los datos en un fichero .arff");
+		}
+	}
+
+	public void convertirAStringToWordVector(String path) {
+		try {
+			Instances dataTrain = GestorFichero.getGestorFichero().cargarInstancias(path);
+			// Se especifica la clase
+			dataTrain.setClassIndex(dataTrain.numAttributes() - 1);
+
+			Filter filter = new StringToWordVector();
+			filter.setInputFormat(dataTrain);
+			Instances filtered = Filter.useFilter(dataTrain, filter);
+
+			// sobreescribir instancias filtradas
+			guardarDatos(path, filtered);
+		} catch (Exception e) {
+			System.out.println("Error al convertir a formato WordVector");
+		}
+
+	}
 }
