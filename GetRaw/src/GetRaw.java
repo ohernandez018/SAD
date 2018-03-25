@@ -20,17 +20,17 @@ public class GetRaw {
 
 				} else if (pathOrigen.endsWith(".csv")) {
 
-					// TODO ConversorCSV
+					ConversorCSV.getConversorCSV().convertir(pathOrigen, pathDestino);
 
 				}
 
 				System.out.println("Transformación completada con éxito!");
 
 			} else {
-				System.out.println("=== LISTA DE ARGUMENTOS ===");
+				System.out.println("==== LISTA DE ARGUMENTOS ====");
 				System.out.println("1. Path del origen (raw)");
 				System.out.println("2. Path del destino (arff)");
-				System.out.println("===========================");
+				System.out.println("=============================");
 			}
 
 		} catch (Exception e) {
