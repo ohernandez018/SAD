@@ -18,7 +18,7 @@ public class ConversorTXT implements IConversor {
 
 	}
 
-	public static ConversorTXT getConversor() {
+	public static ConversorTXT getConversorTXT() {
 		return miConversorTXT;
 	}
 

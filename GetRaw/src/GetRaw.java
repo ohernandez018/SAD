@@ -16,7 +16,7 @@ public class GetRaw {
 
 				} else if (pathOrigen.endsWith(".txt")) {
 
-					ConversorTXT.getConversor().convertir(pathOrigen, pathDestino);
+					ConversorTXT.getConversorTXT().convertir(pathOrigen, pathDestino);
 
 				} else if (pathOrigen.endsWith(".csv")) {
 
