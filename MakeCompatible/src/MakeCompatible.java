@@ -74,7 +74,7 @@ public class MakeCompatible {
 			System.out.println("Entrara como parametro un .arff valido y existente");
 
 			System.out.println("\n=== Poscondicion ===");
-			System.out.println("El programa genera un .arff con los mismo atributos que el train");
+			System.out.println("El programa genera un .arff con los mismos atributos que el train");
 
 			System.out.println("\n=== Lista de argumentos ===");
 			System.out.println("1. Path del train para recoger la cabecera correcta");
