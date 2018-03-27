@@ -32,6 +32,8 @@ public class TransformRaw {
 
 				guardarDatos(args[3], data);
 
+				System.out.println("La transformación se ha completado correctamente!");
+
 			} else {
 				System.out.println("=== LISTA DE ARGUMENTOS ===");
 				System.out.println("1. Elegir entre BoW (-bow) o TF-IDF (-tfidf)");
@@ -40,8 +42,9 @@ public class TransformRaw {
 				System.out.println("4. Ruta donde almacenar el nuevo fichero .arff");
 				System.out.println("===========================");
 			}
+
 		} catch (Exception e) {
-			System.out.println("Ha ocurrido un error durante el proceso de ejecucion.");
+
 		}
 
 	}
@@ -64,7 +67,6 @@ public class TransformRaw {
 
 		} catch (Exception e) {
 			System.err.print("Error al guardar los datos en un fichero .arff");
-			e.printStackTrace();
 			throw e;
 		}
 	}
@@ -78,25 +80,31 @@ public class TransformRaw {
 	 */
 	private static Instances transformBoWOrTFIDF(Instances data, String transformType) throws Exception {
 
-		StringToWordVector stringToWordVector = new StringToWordVector();
-		// Establece si se desea o no igualar mayusculas y minusculas
-		stringToWordVector.setLowerCaseTokens(true);
-		// Establece si se desea o no la frecuencia de aparicion de cada palabra en el
-		// texto
-		stringToWordVector.setOutputWordCounts(false);
-		// Establece el numero de palabras que intenta mantener
-		stringToWordVector.setWordsToKeep(1000000);
+		try {
+			StringToWordVector stringToWordVector = new StringToWordVector();
+			// Establece si se desea o no igualar mayusculas y minusculas
+			stringToWordVector.setLowerCaseTokens(true);
+			// Establece si se desea o no la frecuencia de aparicion de cada palabra en el
+			// texto
+			stringToWordVector.setOutputWordCounts(false);
+			// Establece el numero de palabras que intenta mantener
+			stringToWordVector.setWordsToKeep(1000000);
 
-		// Si el tipo escogido es TF-IDF se le anaden estas opciones
-		if (transformType.equals(TYPE[1])) {
-			stringToWordVector.setIDFTransform(true);
-			stringToWordVector.setTFTransform(true);
-			stringToWordVector.setOutputWordCounts(true);
+			// Si el tipo escogido es TF-IDF se le anaden estas opciones
+			if (transformType.equals(TYPE[1])) {
+				stringToWordVector.setIDFTransform(true);
+				stringToWordVector.setTFTransform(true);
+				stringToWordVector.setOutputWordCounts(true);
+			}
+
+			stringToWordVector.setInputFormat(data);
+			Instances dataSTWV = Filter.useFilter(data, stringToWordVector);
+			return dataSTWV;
+
+		} catch (Exception e) {
+			System.err.print("La transformación a " + transformType + " a fallado.");
+			throw e;
 		}
-
-		stringToWordVector.setInputFormat(data);
-		Instances dataSTWV = Filter.useFilter(data, stringToWordVector);
-		return dataSTWV;
 
 	}
 
@@ -107,11 +115,17 @@ public class TransformRaw {
 	 * @throws Exception
 	 */
 	private static Instances transformToSparse(Instances data) throws Exception {
-		// Se aplica el filtro para convertir las instances de NonSparse a Sparse
-		SparseToNonSparse sparseToNonSparse = new SparseToNonSparse();
-		sparseToNonSparse.setInputFormat(data);
-		Instances dataSparse = Filter.useFilter(data, sparseToNonSparse);
-		return dataSparse;
+		try {
+			// Se aplica el filtro para convertir las instances de NonSparse a Sparse
+			SparseToNonSparse sparseToNonSparse = new SparseToNonSparse();
+			sparseToNonSparse.setInputFormat(data);
+			Instances dataSparse = Filter.useFilter(data, sparseToNonSparse);
+			return dataSparse;
+
+		} catch (Exception e) {
+			System.err.print("La transformación a SPARSE a fallado.");
+			throw e;
+		}
 
 	}
 

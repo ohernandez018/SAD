@@ -1,4 +1,6 @@
 
+import java.io.FileNotFoundException;
+
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
@@ -18,11 +20,17 @@ public class GestorFichero {
 	 * 
 	 * @param dirFichero
 	 */
-	private void abrirFichero(String dirFichero) {
+	private void abrirFichero(String dirFichero) throws Exception {
 		try {
+
 			fichero = new DataSource(dirFichero);
+
+		} catch (FileNotFoundException ex) {
+			System.err.println("Error: Revisar la direccion del fichero --> " + dirFichero);
+			throw ex;
 		} catch (Exception ex) {
-			System.out.println("Error: Revisar la direccion del fichero --> " + dirFichero);
+			System.out.println("Se ha producido un error al obtener los datos del fichero.");
+			throw ex;
 		}
 	}
 
@@ -32,19 +40,23 @@ public class GestorFichero {
 	 * 
 	 * @param dirFichero
 	 */
-	public Instances cargarInstancias(String dirFichero) {
+	public Instances cargarInstancias(String dirFichero) throws Exception {
 		try {
+
 			abrirFichero(dirFichero);
 			if (fichero != null) {
 				// Se cargan las instancias y se define la clase de las instancias
 				Instances instancias = fichero.getDataSet();
 				instancias.setClassIndex(instancias.numAttributes() - 1);
 				return instancias;
-			} else
-				return null;
+
+			} else {
+				throw new Exception();
+			}
+
 		} catch (Exception ex) {
-			System.out.println("Error al cargar las instancias del fichero.");
-			return null;
+			System.err.println("Error al cargar las instancias del fichero.");
+			throw ex;
 		}
 	}
 }
