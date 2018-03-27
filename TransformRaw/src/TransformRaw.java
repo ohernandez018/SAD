@@ -35,16 +35,30 @@ public class TransformRaw {
 				System.out.println("La transformación se ha completado correctamente!");
 
 			} else {
-				System.out.println("=== LISTA DE ARGUMENTOS ===");
+				System.out.println("=== TransformRaw ===");
+				System.out.println(
+						"Este programa transforma el espacio de atributos del conjunto de entrenamiento a BoW o TF·IDF");
+				System.out.println("Ademas permite dar como salida una representacion Sparse o NonSparse");
+
+				System.out.println("\n=== Precondicion ===");
+				System.out.println("Entrara como parametro un .arff valido y existente");
+
+				System.out.println("\n=== Poscondicion ===");
+				System.out.println("El programa genera un .arff con las transformaciones realizadas");
+
+				System.out.println("\n=== Lista de argumentos ===");
 				System.out.println("1. Elegir entre BoW (-bow) o TF-IDF (-tfidf)");
 				System.out.println("2. Elegir entre SPARSE (-s) o NONSPARSE (-ns)");
 				System.out.println("3. Fichero .arff");
 				System.out.println("4. Ruta donde almacenar el nuevo fichero .arff");
+
+				System.out.println("\n=== Ejemplo de uso ===");
+				System.out.println("java -jar TransformRaw.jar -bow -s train.arff trainBOW.arff");
 				System.out.println("===========================");
 			}
 
 		} catch (Exception e) {
-
+			// Error
 		}
 
 	}
