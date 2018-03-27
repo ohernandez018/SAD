@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
@@ -35,6 +36,9 @@ public class ConversorDirectorio implements IConversor {
 			saver.setFile(fi);
 			saver.writeBatch();
 
+		} catch (FileNotFoundException e) {
+			System.err.println("No se ha encontrado el directorio: " + pathOrigenDirectorio);
+			throw e;
 		} catch (Exception e) {
 			System.err.println("Se ha producido un error en la conversion del directorio.");
 			throw e;
