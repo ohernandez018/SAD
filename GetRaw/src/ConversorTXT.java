@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -30,9 +31,10 @@ public class ConversorTXT implements IConversor {
 			Instances data = convertirAInstancias(lineas);
 			exportarARFF(data, pRutaARFF);
 
-		}
-
-		catch (Exception e) {
+		} catch (FileNotFoundException e) {
+			System.err.println("No se ha encontrado el fichero .txt en la ruta especificada: " + pRutaTXT);
+			throw e;
+		} catch (Exception e) {
 			System.err.println("Se ha producido un error al convertir el TXT a ARFF");
 			throw e;
 		}
