@@ -1,5 +1,4 @@
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -8,7 +7,6 @@ import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.converters.ArffSaver;
 
 public class ConversorTXT implements IConversor {
 
@@ -90,13 +88,6 @@ public class ConversorTXT implements IConversor {
 		}
 
 		return aDevolver;
-	}
-
-	private void exportarARFF(Instances pData, String pRuta) throws Exception {
-		ArffSaver saver = new ArffSaver();
-		saver.setInstances(pData);
-		saver.setFile(new File(pRuta));
-		saver.writeBatch();
 	}
 
 }
