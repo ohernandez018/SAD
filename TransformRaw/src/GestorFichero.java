@@ -13,6 +13,11 @@ public class GestorFichero {
 		return gestorFichero;
 	}
 
+	/**
+	 * Abre el fichero que se encuentra en la ruta indicada.
+	 * 
+	 * @param dirFichero
+	 */
 	private void abrirFichero(String dirFichero) {
 		try {
 			fichero = new DataSource(dirFichero);
@@ -21,6 +26,12 @@ public class GestorFichero {
 		}
 	}
 
+	/**
+	 * Carga las instancias y establece la clase del fichero arff de la ruta
+	 * indicada.
+	 * 
+	 * @param dirFichero
+	 */
 	public Instances cargarInstancias(String dirFichero) {
 		try {
 			abrirFichero(dirFichero);
