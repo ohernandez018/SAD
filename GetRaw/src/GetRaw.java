@@ -27,10 +27,26 @@ public class GetRaw {
 				System.out.println("Transformación completada con éxito!");
 
 			} else {
-				System.out.println("==== LISTA DE ARGUMENTOS ====");
+				
+				System.out.println("=== GetRaw ===");
+				System.out.println(
+						"Este programa transforma los datos (de un directorio, de un CSV o de un TXT) a ARFF");
+				
+
+				System.out.println("\n=== Precondicion ===");
+				System.out.println("Entrara como parametro un directorio, un archivo .csv o un archivo .txt válidos y existentes");
+
+				System.out.println("\n=== Poscondicion ===");
+				System.out.println("El programa genera un .arff con los datos");
+
+				System.out.println("\n=== Lista de argumentos ===");
 				System.out.println("1. Path del origen (raw)");
 				System.out.println("2. Path del destino (arff)");
-				System.out.println("=============================");
+				
+
+				System.out.println("\n=== Ejemplo de uso ===");
+				System.out.println("java -jar GetRaw.jar /home/euiti/datos.csv archivo.arff");
+				System.out.println("===========================");
 			}
 
 		} catch (Exception e) {

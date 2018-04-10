@@ -49,7 +49,7 @@ public class ConversorCSV implements IConversor {
 					if (instanciaElemento.length == 5) {
 
 						// Se limpia la linea
-						scapedText = "\"" + instanciaElemento[4].replaceAll("\"", "").replaceAll("â€”", "-") + "\"";
+						scapedText = "\"" + instanciaElemento[4].replaceAll("\"", "").replaceAll("—", "-") + "\"";
 
 						// Se annade la linea al fichero temporal
 						writer.write(instanciaElemento[0] + "," + instanciaElemento[1] + "," + instanciaElemento[2]
