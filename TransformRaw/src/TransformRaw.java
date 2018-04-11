@@ -19,11 +19,11 @@ public class TransformRaw {
 	 */
 	public static void main(String[] args) {
 		try {
-			if (args.length == 4 && (args[0].equals(TYPE[0]) || args[0].equals(TYPE[1]))
+			if (args.length == 5 && (args[0].equals(TYPE[0]) || args[0].equals(TYPE[1]))
 					&& (args[1].equals(SPARS[0]) || args[1].equals(SPARS[1]))) {
 
 				Instances data = GestorFichero.getGestorFichero().cargarInstancias(args[2]);
-				data = transformBoWOrTFIDF(data, args[0]);
+				data = transformBoWOrTFIDF(data, args[0], args[4]);
 
 				// Si el usuario quiere que sea Sparse (Disperso)
 				if (args[1].equals(SPARS[0])) {
@@ -51,6 +51,7 @@ public class TransformRaw {
 				System.out.println("2. Elegir entre SPARSE (-s) o NONSPARSE (-ns)");
 				System.out.println("3. Fichero .arff");
 				System.out.println("4. Ruta donde almacenar el nuevo fichero .arff");
+				System.out.println("5. Ruta donde almacenar el diccionario");
 
 				System.out.println("\n=== Ejemplo de uso ===");
 				System.out.println("java -jar TransformRaw.jar -bow -s train.arff trainBOW.arff");
@@ -92,7 +93,7 @@ public class TransformRaw {
 	 * @param transformType
 	 * @throws Exception
 	 */
-	private static Instances transformBoWOrTFIDF(Instances data, String transformType) throws Exception {
+	private static Instances transformBoWOrTFIDF(Instances data, String transformType, String pathDiccionario) throws Exception {
 
 		try {
 			StringToWordVector stringToWordVector = new StringToWordVector();
@@ -110,9 +111,13 @@ public class TransformRaw {
 				stringToWordVector.setTFTransform(true);
 				stringToWordVector.setOutputWordCounts(true);
 			}
-
+			
 			stringToWordVector.setInputFormat(data);
+			stringToWordVector.setDictionaryFileToSaveTo(new File(pathDiccionario));
 			Instances dataSTWV = Filter.useFilter(data, stringToWordVector);
+			
+			
+			
 			return dataSTWV;
 
 		} catch (Exception e) {

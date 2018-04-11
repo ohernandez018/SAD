@@ -1,68 +1,31 @@
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-
-import weka.core.Attribute;
+import java.io.File;
 import weka.core.Instances;
+import weka.core.converters.ArffSaver;
 import weka.filters.Filter;
-import weka.filters.unsupervised.attribute.Remove;
+import weka.filters.unsupervised.attribute.FixedDictionaryStringToWordVector;
 
 public class MakeCompatible {
 
 	/**
 	 * 
 	 * @param args
-	 * args[0] path del train.arff
-	 * args[1] path del test.arff o dev.arff
-	 * args[2] path para guardar el nuevo fichero compatible
+	 *            args[0] path del train.arff 
+	 *            args[1] path del test.arff o dev.arff
+	 *            args[2] path del diccionario
+	 *            args[3] path para guardar el nuevo fichero compatible
+	 * @throws Exception
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 
-		if (args.length == 3) {
+		if (args.length == 4) {
 			Instances train = GestorFichero.getGestorFichero().cargarInstancias(args[0]);
 			Instances test = GestorFichero.getGestorFichero().cargarInstancias(args[1]);
-
-			Enumeration<Attribute> headboardTrain = train.enumerateAttributes();
-			Enumeration<Attribute> headboardTest = test.enumerateAttributes();
-
-			ArrayList<Integer> attributes = new ArrayList<Integer>();
-
-			int contTrain = 0;
-			int contTest = 0;
-			while (headboardTest.hasMoreElements()) {
-				Attribute attributeTest = headboardTest.nextElement();
-
-				if (headboardTrain.hasMoreElements()) {
-					Attribute attributeTrain = headboardTrain.nextElement();
-
-					if (!attributeTrain.name().equals(attributeTest.name())) {
-						attributes.add(attributeTest.index());
-						attributeTest = headboardTest.nextElement();
-						while (!(attributeTrain.name().equals(attributeTest.name()))
-								&& headboardTest.hasMoreElements()) {
-							attributeTest = headboardTest.nextElement();
-							attributes.add(attributeTest.index());
-							contTest++;
-						}
-						contTest++;
-					}
-					contTrain++;
-				} else {
-					attributes.add(attributeTest.index());
-				}
-				contTest++;
-			}
-			int[] indexAttributes = new int[attributes.size()];
-			for (int i = 0; i < attributes.size(); i++) {
-				indexAttributes[i] = attributes.get(i);
-			}
-
-			Instances newInstances = removeAttributes(indexAttributes, test);
-			GestorFichero.getGestorFichero().exportarARFF(newInstances, args[2]);
-
-			System.out.println("Atributos diferentes " + attributes.size());
-			System.out.println("El conjunto train tiene " + contTrain + " atributos");
-			System.out.println("El conjunto test tiene " + contTest + " atributos");
+			FixedDictionaryStringToWordVector filtro = new FixedDictionaryStringToWordVector();
+			filtro.setDictionaryFile(new File(args[2]));
+			filtro.setInputFormat(train);
+			Instances newData = Filter.useFilter(test, filtro);
+			guardarDatos(args[3], newData);
 
 		} else {
 			System.out.println("=== MakeCompatible ===");
@@ -77,33 +40,30 @@ public class MakeCompatible {
 			System.out.println("El programa genera un .arff con los mismos atributos que el train");
 
 			System.out.println("\n=== Lista de argumentos ===");
-			System.out.println("1. Path del train para recoger la cabecera correcta");
+			System.out.println("1. Path del train");
 			System.out.println("2. Path del test o dev para MakeCompatible");
-			System.out.println("2. Path para guardar el nuevo fichero arff");
+			System.out.println("3. Path para recoger el diccionario");
+			System.out.println("4. Path para guardar el nuevo fichero arff");
 
 			System.out.println("\n=== Ejemplo de uso ===");
-			System.out.println("java -jar MakeCompatible.jar train.arff test.arff testCompatible.arff");
+			System.out.println("java -jar MakeCompatible.jar train.arff test.arff diccionario testCompatible.arff");
 			System.out.println("===========================");
-
 		}
 	}
-	
-	/***
-	 * Este metodo aplica el filtro remove a unas instancias
-	 * @param pAttributes que contiene los índices con los atributos a eliminar
-	 * @param pInstances tiene las instancias de test o dev
-	 * @return devuelve las instancias con los mismos atributos que el train
-	 */
-	private static Instances removeAttributes(int[] pAttributes, Instances pInstances) {
+
+	private static void guardarDatos(String path, Instances data) throws Exception {
 		try {
-			Remove remove = new Remove();
-			remove.setAttributeIndicesArray(pAttributes);
-			remove.setInvertSelection(false);
-			remove.setInputFormat(pInstances);
-			return Filter.useFilter(pInstances, remove);
+			// Guardar datos
+			File fi = new File(path);
+			ArffSaver saver = new ArffSaver();
+			saver.setInstances(data);
+			saver.setFile(fi);
+			saver.writeBatch();
+			System.out.print(".arff compatible guardado correctamente");
+
 		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+			System.err.print("Error al guardar los datos en un fichero .arff");
+			throw e;
 		}
 	}
 }
