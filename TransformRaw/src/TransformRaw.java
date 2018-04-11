@@ -13,8 +13,7 @@ public class TransformRaw {
 
 	/**
 	 * Realiza las tranformaciones de los datos en funcion de los parametros
-	 * indicados
-	 * 
+	 * indicados 
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -113,6 +112,7 @@ public class TransformRaw {
 			}
 			
 			stringToWordVector.setInputFormat(data);
+			//Guardamos el diccionario para poder hacer el test o dev compatible
 			stringToWordVector.setDictionaryFileToSaveTo(new File(pathDiccionario));
 			Instances dataSTWV = Filter.useFilter(data, stringToWordVector);
 			
