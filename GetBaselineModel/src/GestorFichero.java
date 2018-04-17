@@ -1,21 +1,30 @@
 
-import java.io.File;
-
 import weka.core.Instances;
-import weka.core.converters.ArffSaver;
 import weka.core.converters.ConverterUtils.DataSource;
 
 public class GestorFichero {
+	
 	private static GestorFichero gestorFichero = new GestorFichero();
 	private DataSource fichero = null;
-
+	
+	/**
+	 * constructora privada 
+	 */
 	private GestorFichero() {
 	}
-
+	
+	/**
+	 * Patrón singleton
+	 * @return devuelve la instancia del patrón singleton: gestorFichero
+	 */
 	public static GestorFichero getGestorFichero() {
 		return gestorFichero;
 	}
-
+	
+	/**
+	 * Abre el fichero .arrf de la ruta especificada.
+	 * @param dirFichero Path del fichero .arff
+	 */
 	private void abrirFichero(String dirFichero) {
 		try {
 			fichero = new DataSource(dirFichero);
@@ -23,14 +32,18 @@ public class GestorFichero {
 			System.out.println("Error: Revisar la direccion del fichero --> " + dirFichero);
 		}
 	}
-
+	
+	/**
+	 * Carga las instancias del fichero .arff de la ruta especificada.
+	 * @param dirFichero Path de dónde se cargan las instancias
+	 * @return Devuelve instancias que ha leído del fichero
+	 */
 	public Instances cargarInstancias(String dirFichero) {
 		try {
 			abrirFichero(dirFichero);
 			if (fichero != null) {
 				// Se cargan las instancias y se define la clase de las instancias
 				Instances instancias = fichero.getDataSet();
-				instancias.setClassIndex(0);
 				return instancias;
 			} else
 				return null;
@@ -39,16 +52,5 @@ public class GestorFichero {
 			return null;
 		}
 	}
-
-	public void exportarARFF(Instances pData, String pRuta) {
-		try {
-			ArffSaver saver = new ArffSaver();
-			saver.setInstances(pData);
-			saver.setFile(new File(pRuta));
-			saver.writeBatch();
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		}
-	}
+	
 }
