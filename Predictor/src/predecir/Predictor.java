@@ -7,7 +7,6 @@ import java.io.PrintWriter;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 import weka.core.SerializationHelper;
-import weka.core.converters.ConverterUtils.DataSource;
 
 public class Predictor {
 	private static Classifier clasificador;
@@ -18,7 +17,7 @@ public class Predictor {
 
 		try {
 
-			pDatos.setClassIndex(this.buscarClase(pDatos));
+			pDatos.setClassIndex(pDatos.numAttributes()-1);
 
 			/***********************************
 			 * IMPORTAR MODELO
@@ -28,36 +27,20 @@ public class Predictor {
 			/***********************************
 			 * HACER PREDICCIONES
 			 ***********************************/
+			resultados = new FileWriter(pRutaResultados);
+			pw = new PrintWriter(resultados);
 			int j = 0;
 			for (int i = 0; i < pDatos.numInstances(); i++) {
-				System.out.print("ID: " + pDatos.instance(i).value(0));
-				System.out.print(", actual: " + pDatos.classAttribute().value((int) pDatos.instance(i).classValue()));
-				System.out.println(", predicción: "
+				pw.println("ID: " + pDatos.instance(i).value(0) + ", actual: " + pDatos.classAttribute().value((int) pDatos.instance(i).classValue()) + ", predicción: "
 						+ pDatos.classAttribute().value((int) clasificador.classifyInstance(pDatos.instance(i))));
 				j++;
 			}
+			resultados.close();
 			System.out.println(" " + j + " instancias predecidas");
 		} catch (FileNotFoundException f) {
 			System.out.println("Error al cargar el modelo");
 		} catch (Exception e) {
 			System.out.println("Error al predecir instancias");
 		}
-	}
-
-	private int buscarClase(Instances data) {
-		int a = -1;
-		try {
-			for (int i = 0; i < data.numAttributes(); i++) {
-				if (data.attribute(i).name().equals("class")) {
-					a = i;
-					break;
-				}
-			}
-			return a;
-		} catch (Exception e) {
-			System.out.println("Error al establecer la clase");
-			return a;
-		}
-
 	}
 }
