@@ -34,12 +34,13 @@ public class GestorFichero {
 			throw ex;
 		}
 	}
-
 	/**
 	 * Carga las instancias y establece la clase del fichero arff de la ruta
 	 * indicada.
 	 * 
-	 * @param dirFichero
+	 * @param dirFichero path del .txt
+	 * @return devuelve el conjunto de instancias en formato .arff
+	 * @throws Exception si algo falla devuelve el error producido.
 	 */
 	public Instances cargarInstancias(String dirFichero) throws Exception {
 		try {

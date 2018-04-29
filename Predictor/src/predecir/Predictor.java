@@ -12,9 +12,8 @@ public class Predictor {
 	private static Classifier clasificador;
 	private static FileWriter resultados = null;
 	private static PrintWriter pw = null;
-	
+
 	private static Predictor predictor = new Predictor();
-	
 
 	private Predictor() {
 	}
@@ -23,12 +22,17 @@ public class Predictor {
 		return predictor;
 	}
 
-
+	/**
+	 * 
+	 * @param pRutaModelo path del modelo
+	 * @param pDatos conjunto de datos (Instances)
+	 * @param pRutaResultados path donde guardar los resultados de las predicciones
+	 */
 	public void predecir(String pRutaModelo, Instances pDatos, String pRutaResultados) {
 
 		try {
 
-			pDatos.setClassIndex(pDatos.numAttributes()-1);
+			pDatos.setClassIndex(pDatos.numAttributes() - 1);
 
 			/***********************************
 			 * IMPORTAR MODELO
@@ -42,7 +46,8 @@ public class Predictor {
 			pw = new PrintWriter(resultados);
 			int j = 0;
 			for (int i = 0; i < pDatos.numInstances(); i++) {
-				pw.println("ID: " + pDatos.instance(i).value(0) + ", actual: " + pDatos.classAttribute().value((int) pDatos.instance(i).classValue()) + ", predicción: "
+				pw.println("ID: " + pDatos.instance(i).value(0) + ", actual: "
+						+ pDatos.classAttribute().value((int) pDatos.instance(i).classValue()) + ", predicción: "
 						+ pDatos.classAttribute().value((int) clasificador.classifyInstance(pDatos.instance(i))));
 				j++;
 			}
