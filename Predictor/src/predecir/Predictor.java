@@ -12,6 +12,17 @@ public class Predictor {
 	private static Classifier clasificador;
 	private static FileWriter resultados = null;
 	private static PrintWriter pw = null;
+	
+	private static Predictor predictor = new Predictor();
+	
+
+	private Predictor() {
+	}
+
+	public static Predictor getPredictor() {
+		return predictor;
+	}
+
 
 	public void predecir(String pRutaModelo, Instances pDatos, String pRutaResultados) {
 
@@ -38,9 +49,10 @@ public class Predictor {
 			resultados.close();
 			System.out.println(" " + j + " instancias predecidas");
 		} catch (FileNotFoundException f) {
-			System.out.println("Error al cargar el modelo");
+			System.err.println("Error al cargar el modelo");
 		} catch (Exception e) {
-			System.out.println("Error al predecir instancias");
+			e.printStackTrace();
+			System.err.println("Error al predecir instancias");
 		}
 	}
 }
