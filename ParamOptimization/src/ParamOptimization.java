@@ -16,22 +16,12 @@ public class ParamOptimization {
 	private static Instances data;
 	private static MultilayerPerceptron multilayerPerceptron;
 
-	/**
-	 * 
-	 * @param args
-	 */
 	public static void main(String[] args) {
-		
-		String a = "C:\\Users\\Pablo\\Desktop\\iris.arff";
-		String b = "C:\\Users\\Pablo\\Desktop\\calidad.txt";
-		String c = "C:\\Users\\Pablo\\Desktop\\modelo.model";
-		
 
 		try {
-			
-			data = new DataSource(a).getDataSet();			
-			data.setClassIndex(data.numAttributes()-1);
-			
+
+			data = new DataSource(args[0]).getDataSet();
+			data.setClassIndex(data.numAttributes() - 1);
 
 			multilayerPerceptron = new MultilayerPerceptron();
 
@@ -42,7 +32,7 @@ public class ParamOptimization {
 			boolean decayOpt = false;
 			String hiddenLayersOpt = "";
 
-			ArrayList<String> hiddenlayers = new ArrayList<String>();
+			ArrayList<String> hiddenlayers = new ArrayList<>();
 			hiddenlayers.add("a");
 			hiddenlayers.add("i");
 			hiddenlayers.add("o");
@@ -78,7 +68,6 @@ public class ParamOptimization {
 								// Comparar con la f-measure de la clase minoritaria
 								double fMeasure = evaluation.fMeasure(claseMinoritaria(data));
 
-					
 								if (fMeasure > fMeasureOpt) {
 									fMeasureOpt = fMeasure;
 									hiddenLayersOpt = hiddenlayers.get(i);
@@ -100,10 +89,9 @@ public class ParamOptimization {
 			MultilayerPerceptron multilayerPerceptronOpt = createOptimizedClasifier(learningRateOpt, momentumOpt,
 					trainingTimeOpt, decayOpt, hiddenLayersOpt);
 
-			exportModel(c, multilayerPerceptronOpt);
-			
-			
-			evaluarCalidadYExportar(multilayerPerceptronOpt, b, data);
+			exportModel(args[2], multilayerPerceptronOpt);
+
+			evaluarCalidadYExportar(multilayerPerceptronOpt, args[1], data);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -113,38 +101,42 @@ public class ParamOptimization {
 	}
 
 	/**
-	 * Este método evalúa por 10-fold y por la evaluación no honesta las pInstances con el clasificador pMultilayerPerceptronOpt y exporta los resultado en la ruta pRuta
+	 * Este metodo evalua por 10-fold y por la evaluacion no honesta las pInstances
+	 * con el clasificador pMultilayerPerceptronOpt y exporta los resultado en la
+	 * ruta pRuta
 	 * 
 	 * @param multilayerPerceptronOpt
 	 * @param pRuta
 	 * @param pInstancias
 	 * @throws Exception
 	 */
-	private static void evaluarCalidadYExportar(MultilayerPerceptron pMultilayerPerceptronOpt, String pRuta, Instances pInstancias) throws Exception{
-		
-		Evaluation evaluator;	
-		
+	private static void evaluarCalidadYExportar(MultilayerPerceptron pMultilayerPerceptronOpt, String pRuta,
+			Instances pInstancias) throws Exception {
+
+		Evaluation evaluator;
+
 		evaluator = new Evaluation(pInstancias);
 		evaluator.crossValidateModel(pMultilayerPerceptronOpt, pInstancias, 10, new Random(1));
 		escribirLinea("10 FOLD CROSS VALIDATION", pRuta);
-		escribirLinea(evaluator.toSummaryString()+"F-measure de la clase minoritaria--> "+evaluator.fMeasure(claseMinoritaria(pInstancias)), pRuta);
+		escribirLinea(evaluator.toSummaryString() + "F-measure de la clase minoritaria--> "
+				+ evaluator.fMeasure(claseMinoritaria(pInstancias)), pRuta);
 		escribirLinea(evaluator.toClassDetailsString(), pRuta);
 		escribirLinea(evaluator.toMatrixString(), pRuta);
-		
+
 		escribirLinea("\n\n", pRuta);
 
 		evaluator = new Evaluation(pInstancias);
 		evaluator.evaluateModel(pMultilayerPerceptronOpt, pInstancias);
 		escribirLinea("NO HONESTA", pRuta);
-		escribirLinea(evaluator.toSummaryString()+"F-measure de la clase minoritaria--> "+evaluator.fMeasure(claseMinoritaria(pInstancias)), pRuta);
+		escribirLinea(evaluator.toSummaryString() + "F-measure de la clase minoritaria--> "
+				+ evaluator.fMeasure(claseMinoritaria(pInstancias)), pRuta);
 		escribirLinea(evaluator.toClassDetailsString(), pRuta);
 		escribirLinea(evaluator.toMatrixString(), pRuta);
-				
+
 	}
-	
-	
+
 	/**
-	 * Este método escribe en la ruta pRuta la línea de texto pTexto
+	 * Este metodo escribe en la ruta pRuta la linea de texto pTexto
 	 * 
 	 * @param pTexto
 	 * @param pRuta
@@ -156,9 +148,9 @@ public class ParamOptimization {
 		f.close();
 	}
 
-	
 	/**
-	 * Este método crea y devuelve el clasificador óptimo que construye con los parámetros indicados.
+	 * Este metodo crea y devuelve el clasificador optimo que construye con los
+	 * parametros indicados.
 	 * 
 	 * @param learningRateOpt
 	 * @param momentumOpt
@@ -169,23 +161,24 @@ public class ParamOptimization {
 	 * @throws Exception
 	 */
 	private static MultilayerPerceptron createOptimizedClasifier(double learningRateOpt, double momentumOpt,
-			int trainingTimeOpt, boolean decayOpt, String hiddenLayersOpt) throws Exception{
+			int trainingTimeOpt, boolean decayOpt, String hiddenLayersOpt) throws Exception {
 
 		MultilayerPerceptron aDevolver = new MultilayerPerceptron();
-		
+
 		aDevolver.setLearningRate(learningRateOpt);
 		aDevolver.setMomentum(momentumOpt);
 		aDevolver.setTrainingTime(trainingTimeOpt);
 		aDevolver.setDecay(decayOpt);
 		aDevolver.setHiddenLayers(hiddenLayersOpt);
-		
+
 		aDevolver.buildClassifier(data);
 
 		return aDevolver;
 	}
 
 	/**
-	 * Este método genera y exporta en pPath el modelo generado a partir de pMultilayerPerceptronOpt
+	 * Este metodo genera y exporta en pPath el modelo generado a partir de
+	 * pMultilayerPerceptronOpt
 	 * 
 	 * @param path
 	 * @param multilayerPerceptronOpt
@@ -197,7 +190,8 @@ public class ParamOptimization {
 	}
 
 	/**
-	 * Este método realiza la evaluación hold-out con el porcentaje especificado en pPercentage
+	 * Este metodo realiza la evaluacion hold-out con el porcentaje especificado en
+	 * pPercentage
 	 * 
 	 * @param pPercentage
 	 * @return
@@ -218,8 +212,7 @@ public class ParamOptimization {
 		removePercentage.setInvertSelection(false);
 		removePercentage.setInputFormat(data);
 		Instances test = Filter.useFilter(data, removePercentage);
-		
-		
+
 		multilayerPerceptron.buildClassifier(train);
 
 		ev = new Evaluation(train);
@@ -228,9 +221,9 @@ public class ParamOptimization {
 		return ev;
 
 	}
-	
+
 	/**
-	 * Este método devuelve el índice de la clase minoritaria de pDatos
+	 * Este metodo devuelve el indice de la clase minoritaria de pDatos
 	 * 
 	 * @param pDatos
 	 * @return
